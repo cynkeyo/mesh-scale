@@ -1,4 +1,4 @@
-local constants = require(script.Parent.constants)
+local constants = require(script.Parent.Parent.constants)
 local toolbar: PluginToolbar
 local toggleScaleButton: PluginToolbarButton
 local meshifyButton: PluginToolbarButton
