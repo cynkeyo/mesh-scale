@@ -2,10 +2,11 @@ local constants = require(script.Parent.Parent.constants)
 local toolbar: PluginToolbar
 local toggleScaleButton: PluginToolbarButton
 local meshifyButton: PluginToolbarButton
+local matchPartPivotToMesh: PluginToolbarButton
 
 local UserInterface = {}
 
-function UserInterface:init(plugin, onScaleToggled, onMeshify)
+function UserInterface:init(plugin, onScaleToggled, onMeshify, onMatchPartPivotToMesh)
 	toolbar = plugin:CreateToolbar(`{constants.PLUGIN_NAME} {constants.PLUGIN_VERSION}`)
 
 	do
@@ -22,12 +23,16 @@ function UserInterface:init(plugin, onScaleToggled, onMeshify)
 
 	meshifyButton = toolbar:CreateButton("Meshify part", "Creates a mesh with the part's shape.", "rbxassetid://127843254741492")
 	meshifyButton.Click:Connect(onMeshify)
+
+    matchPartPivotToMesh = toolbar:CreateButton("Match part pivot to mesh", "Matches the part's pivot to the mesh's center", "rbxassetid://127843254741492")
+    matchPartPivotToMesh.Click:Connect(onMatchPartPivotToMesh)
 end
 
 function UserInterface:cleanup()
 	toolbar:Destroy()
 	toggleScaleButton:Destroy()
 	meshifyButton:Destroy()
+    matchPartPivotToMesh:Destroy()
 end
 
 return UserInterface

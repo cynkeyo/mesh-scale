@@ -1,5 +1,5 @@
 return {
     PLUGIN_NAME = "Mesh Scale",
     PLUGIN_ID = "Mesh Scale",
-    PLUGIN_VERSION = "1.0.0",
+    PLUGIN_VERSION = "1.1.0",
 }

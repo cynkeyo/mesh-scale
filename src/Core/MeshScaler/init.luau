@@ -3,20 +3,10 @@ local CoreGui = game:GetService("CoreGui")
 local StudioService = game:GetService("StudioService")
 local UserInputService = game:GetService("UserInputService")
 
+local getUsedMeshFromParent = require(script.Parent.getUsedMeshFromParent)
 local ScalerHandles = require(script.ScalerHandles)
 
 local MESH_SCALE_RECORDING_NAME = "Scale Mesh"
-
-local function getUsedMeshFromParent(parent: BasePart): DataModelMesh
-	local usedMesh = nil
-	for _, child in pairs(parent:GetChildren()) do
-		if child:IsA("DataModelMesh") then
-			usedMesh = child
-		end
-	end
-
-	return usedMesh
-end
 
 local function canAttachToInstance(instance: Instance)
 	if not instance:IsA("BasePart") then

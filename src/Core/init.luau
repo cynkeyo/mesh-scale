@@ -2,6 +2,7 @@ local Selection = game:GetService("Selection")
 
 local MeshScalerAttacher = require(script.MeshScalerAttacher)
 local UserInterface = require(script.UserInterface)
+local matchPartPivotToMesh = require(script.matchPartPivotToMesh)
 local meshify = require(script.meshify)
 
 local selectionChangedConnection: RBXScriptConnection
@@ -42,6 +43,14 @@ function Core:init(plugin)
 			end
 
 			meshify(selected)
+		end
+	end, function()
+		for _, selected in pairs(Selection:Get()) do
+			if not selected:IsA("BasePart") then
+				continue
+			end
+
+			matchPartPivotToMesh(selected)
 		end
 	end)
 
