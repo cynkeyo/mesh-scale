@@ -1,5 +1,11 @@
+local ChangeHistoryService = game:GetService("ChangeHistoryService")
 local CoreGui = game:GetService("CoreGui")
 local StudioService = game:GetService("StudioService")
+local UserInputService = game:GetService("UserInputService")
+
+local ScalerHandles = require(script.ScalerHandles)
+
+local MESH_SCALE_RECORDING_NAME = "Scale Mesh"
 
 local function getUsedMeshFromParent(parent: BasePart): DataModelMesh
 	local usedMesh = nil
@@ -34,12 +40,19 @@ local function getNonZeroAxis(vector: Vector3)
 	end
 end
 
+local function isControlKey(input: InputObject): boolean
+	return input.KeyCode == Enum.KeyCode.LeftControl or input.KeyCode == Enum.KeyCode.RightControl
+end
+
 local MeshScaler = {}
 MeshScaler.__index = MeshScaler
 
 export type ClassType = typeof(setmetatable(
 	{} :: {
-		_scalerHandles: Handles,
+		_scalerHandles: ScalerHandles.ClassType,
+		_holdingControl: boolean,
+		_inputBeganConnection: RBXScriptConnection,
+		_inputEndedConnection: RBXScriptConnection,
 	},
 	MeshScaler
 ))
@@ -54,9 +67,14 @@ function MeshScaler.new(attachedPart: BasePart): ClassType
 	local self = setmetatable({}, MeshScaler) :: ClassType
 
 	local usedMesh = getUsedMeshFromParent(attachedPart)
-	local scalerHandles = Instance.new("Handles")
+	local scalerHandles = ScalerHandles.new(attachedPart, usedMesh)
 
 	scalerHandles.MouseButton1Down:Connect(function()
+        local recording = ChangeHistoryService:TryBeginRecording(MESH_SCALE_RECORDING_NAME)
+        if not recording then
+            return
+        end
+
 		local initialMeshScale = usedMesh.Scale
 		local initialMeshOffset = usedMesh.Offset
 		local initialTransparency = attachedPart.Transparency
@@ -67,12 +85,16 @@ function MeshScaler.new(attachedPart: BasePart): ClassType
 			local gridSize = StudioService.GridSize
 			distance = math.floor(distance / gridSize) * gridSize
 
-			-- local unitVector = Vector3.one
 			local normalVector = Vector3.fromNormalId(normal)
-			local offsetVector = initialMeshOffset + (normalVector * distance / 2)
-			local scaleVector = initialMeshScale + (absVector(normalVector) / attachedPart.Size * distance)
+			local offsetVector = if self._holdingControl
+                then initialMeshOffset
+                else initialMeshOffset + (normalVector * distance / 2)
+			local scaleVector = if self._holdingControl
+				then initialMeshScale + (absVector(normalVector) / attachedPart.Size * distance * 2)
+				else initialMeshScale + (absVector(normalVector) / attachedPart.Size * distance)
 
-			if scaleVector.X < 0 or scaleVector.Y < 0 or scaleVector.Z < 0 then
+			-- prevent offsetting when scale vector gets is below zero since it's clamped to 0
+			if (scaleVector.X < 0 or scaleVector.Y < 0 or scaleVector.Z < 0) and not self._holdingControl then
 				local partSizeAxis = getNonZeroAxis(attachedPart.Size * absVector(normalVector))
 				local absAxis = getNonZeroAxis(absVector(normalVector))
 
@@ -92,6 +114,9 @@ function MeshScaler.new(attachedPart: BasePart): ClassType
 
 		scalerHandles.MouseButton1Up:Once(function()
 			attachedPart.Transparency = initialTransparency
+
+            ChangeHistoryService:FinishRecording(recording, Enum.FinishRecordingOperation.Commit)
+
 			onDrag:Disconnect()
 		end)
 	end)
@@ -100,12 +125,25 @@ function MeshScaler.new(attachedPart: BasePart): ClassType
 	scalerHandles.Parent = CoreGui
 
 	self._scalerHandles = scalerHandles
+	self._holdingControl = false
+	self._inputBeganConnection = UserInputService.InputBegan:Connect(function(input)
+		if isControlKey(input) then
+			self._holdingControl = true
+		end
+	end)
+	self._inputEndedConnection = UserInputService.InputEnded:Connect(function(input)
+		if isControlKey(input) then
+			self._holdingControl = false
+		end
+	end)
 
 	return self
 end
 
 function MeshScaler.Destroy(self: ClassType)
 	self._scalerHandles:Destroy()
+	self._inputBeganConnection:Disconnect()
+	self._inputEndedConnection:Disconnect()
 	table.clear(self :: any)
 	setmetatable(self :: any, nil)
 	table.freeze(self)
