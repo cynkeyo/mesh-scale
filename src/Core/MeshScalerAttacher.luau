@@ -1,19 +1,25 @@
 local MeshScaler = require(script.Parent.MeshScaler)
 
 local meshScaler: MeshScaler.ClassType?
+local lastTool: Enum.RibbonTool?
 local currentPlugin: Plugin
 
 local function detachScaler()
 	if meshScaler then
+		if lastTool then
+			currentPlugin:SelectRibbonTool(lastTool, UDim2.new())
+            lastTool = nil
+		end
+
 		meshScaler:Destroy()
-        meshScaler = nil
+		meshScaler = nil
 	end
 end
 
 local MeshScalerAttacher = {}
 
 function MeshScalerAttacher:init(plugin)
-    currentPlugin = plugin
+	currentPlugin = plugin
 end
 
 function MeshScalerAttacher.canAttachToInstance(instance: Instance): boolean
@@ -21,10 +27,12 @@ function MeshScalerAttacher.canAttachToInstance(instance: Instance): boolean
 end
 
 function MeshScalerAttacher:attachToPart(part: BasePart)
-    assert(MeshScaler.canAttachToInstance(part), "Can't attach to this instance")
+	assert(MeshScaler.canAttachToInstance(part), "Can't attach to this instance")
 
-    currentPlugin:SelectRibbonTool(Enum.RibbonTool.None, UDim2.new())
-    meshScaler = MeshScaler.new(part)
+	lastTool = currentPlugin:GetSelectedRibbonTool()
+	currentPlugin:SelectRibbonTool(Enum.RibbonTool.None, UDim2.new())
+
+	meshScaler = MeshScaler.new(part)
 end
 
 function MeshScalerAttacher:detach()
@@ -32,7 +40,7 @@ function MeshScalerAttacher:detach()
 end
 
 function MeshScalerAttacher:cleanup()
-    detachScaler()
+	detachScaler()
 end
 
 return MeshScalerAttacher
