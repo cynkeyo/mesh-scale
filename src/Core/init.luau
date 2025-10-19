@@ -1,6 +1,8 @@
 local Selection = game:GetService("Selection")
+
 local MeshScalerAttacher = require(script.MeshScalerAttacher)
 local UserInterface = require(script.UserInterface)
+local meshify = require(script.meshify)
 
 local selectionChangedConnection: RBXScriptConnection
 local meshScalerActive = false
@@ -33,7 +35,15 @@ function Core:init(plugin)
 		else
 			onSelectionChanged()
 		end
-	end, function() end)
+	end, function()
+		for _, selected in pairs(Selection:Get()) do
+			if not selected:IsA("BasePart") then
+				continue
+			end
+
+			meshify(selected)
+		end
+	end)
 
 	selectionChangedConnection = Selection.SelectionChanged:Connect(onSelectionChanged)
 end
