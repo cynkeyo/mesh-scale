@@ -11,7 +11,7 @@ function UserInterface:init(plugin, onScaleToggled, onMeshify)
 	do
         local toggleScale = false
 
-		toggleScaleButton = toolbar:CreateButton("Toggle Mesh Scaler", "Scale a selected mesh", "")
+		toggleScaleButton = toolbar:CreateButton("Toggle Mesh Scaler", "Scale the selected mesh with handles", "rbxassetid://127843254741492")
 		toggleScaleButton.Click:Connect(function()
             toggleScale = not toggleScale
 
@@ -20,7 +20,7 @@ function UserInterface:init(plugin, onScaleToggled, onMeshify)
         end)
 	end
 
-	meshifyButton = toolbar:CreateButton("Meshify part", "Creates a mesh with the part's shape.", "")
+	meshifyButton = toolbar:CreateButton("Meshify part", "Creates a mesh with the part's shape.", "rbxassetid://127843254741492")
 	meshifyButton.Click:Connect(onMeshify)
 end
 
