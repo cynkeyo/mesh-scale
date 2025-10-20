@@ -30,7 +30,7 @@ function MeshScalerAttacher:attachToPart(part: BasePart)
 	assert(MeshScaler.canAttachToInstance(part), "Can't attach to this instance")
 
 	lastTool = currentPlugin:GetSelectedRibbonTool()
-	currentPlugin:SelectRibbonTool(Enum.RibbonTool.None, UDim2.new())
+	currentPlugin:SelectRibbonTool(Enum.RibbonTool.Select, UDim2.new())
 
 	meshScaler = MeshScaler.new(part)
 end
