@@ -12,7 +12,7 @@ function UserInterface:init(plugin, onScaleToggled, onMeshify, onMatchPartPivotT
 	do
         local toggleScale = false
 
-		toggleScaleButton = toolbar:CreateButton("Toggle Mesh Scaler", "Scale the selected mesh with handles", "rbxassetid://127843254741492")
+		toggleScaleButton = toolbar:CreateButton("Toggle", "Scale the selected mesh with handles", "rbxassetid://127843254741492")
 		toggleScaleButton.Click:Connect(function()
             toggleScale = not toggleScale
 
@@ -21,10 +21,10 @@ function UserInterface:init(plugin, onScaleToggled, onMeshify, onMatchPartPivotT
         end)
 	end
 
-	meshifyButton = toolbar:CreateButton("Meshify part", "Creates a mesh with the part's shape.", "rbxassetid://127843254741492")
+	meshifyButton = toolbar:CreateButton("Meshify", "Creates a mesh with the part's shape.", "rbxassetid://127843254741492")
 	meshifyButton.Click:Connect(onMeshify)
 
-    matchPartPivotToMesh = toolbar:CreateButton("Match part pivot to mesh", "Matches the part's pivot to the mesh's center", "rbxassetid://127843254741492")
+    matchPartPivotToMesh = toolbar:CreateButton("Match pivot", "Matches the part's pivot to the mesh's center", "rbxassetid://127843254741492")
     matchPartPivotToMesh.Click:Connect(onMatchPartPivotToMesh)
 end
 
