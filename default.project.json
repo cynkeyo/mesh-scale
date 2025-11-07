@@ -1,6 +1,9 @@
 {
-  "name": "mesh-scale",
-  "tree": {
-    "$path": "src"
-  }
+    "name": "mesh-scale",
+    "tree": {
+        "$path": "src",
+        "packages": {
+            "$path": "Packages"
+        }
+    }
 }
