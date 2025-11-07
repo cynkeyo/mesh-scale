@@ -14,10 +14,8 @@ function Core:init(plugin)
 
 	UserInterface:init(plugin, function(toggle)
 		if not toggle then
-            print("deacitvated throug hcore")
             ribbonTool:Deactivate()
 		else
-            print("adsasdasd")
             ribbonTool:Activate()
 		end
 	end, function()
