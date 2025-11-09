@@ -28,10 +28,11 @@ function MeshScalerTool.new(plugin: Plugin): ClassType
 	self._plugin = plugin
 	self._janitor = janitor
 
-	local hoverSelectionBox = janitor:Add(Instance.new("SelectionBox"))
-	hoverSelectionBox.Color3 = Color3.fromRGB(161, 0, 172)
-	hoverSelectionBox.LineThickness = 0.05
-	hoverSelectionBox.Parent = CoreGui
+	local hoverHighlight = janitor:Add(Instance.new("Highlight"))
+	hoverHighlight.OutlineColor = Color3.fromRGB(161, 0, 172)
+	hoverHighlight.FillColor = Color3.fromRGB(161, 0, 172)
+	hoverHighlight.FillTransparency = 0.9
+	hoverHighlight.Parent = CoreGui
 
 	-- selection functionality
 	plugin:Activate(true)
@@ -52,7 +53,7 @@ function MeshScalerTool.new(plugin: Plugin): ClassType
 		if not target then
 			return
 		end
-		hoverSelectionBox.Adornee = if MeshScaler.canAttachToInstance(target) then target else nil
+		hoverHighlight.Adornee = if MeshScaler.canAttachToInstance(target) then target else nil
 	end))
 
 	local activeScaler: MeshScaler.ClassType?
