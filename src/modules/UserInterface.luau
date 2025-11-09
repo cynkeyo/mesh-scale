@@ -7,8 +7,8 @@ local matchPartPivotToMesh: PluginToolbarButton
 
 local UserInterface = {}
 
-function UserInterface:init(plugin, onScaleToggled, onMeshify, onMatchPartPivotToMesh)
-	toolbar = plugin:CreateToolbar(`{constants.PLUGIN_NAME} {constants.PLUGIN_VERSION}`)
+function UserInterface:init(plugin: Plugin, onScaleToggled, onMeshify, onMatchPartPivotToMesh)
+	toolbar = plugin:CreateToolbar(constants.PLUGIN_NAME)
 
     toggleScaleButton = toolbar:CreateButton("Scaler", "Toggles the Mesh Scaler tool.", "rbxassetid://127843254741492")
     toggleScaleButton.Click:Connect(function()
