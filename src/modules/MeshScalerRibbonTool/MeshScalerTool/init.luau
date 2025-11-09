@@ -103,6 +103,17 @@ function MeshScalerTool.new(plugin: Plugin): ClassType
         end
     end))
 
+	local selection = Selection:Get()
+	local firstSelected = selection[1]
+	if #selection == 1 then
+		if MeshScaler.canAttachToInstance(firstSelected) then
+			activeScaler = MeshScaler.new(firstSelected, mouse)
+			lastSelected = firstSelected
+
+			janitor:Add(activeScaler, false, ACTIVE_SCALER_JANITOR_INDEX)
+		end
+	end
+
 	return self
 end
 function MeshScalerTool.Destroy(self: ClassType)
